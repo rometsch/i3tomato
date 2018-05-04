@@ -14,6 +14,10 @@ focus_length = datetime.timedelta(minutes=focus_minutes)
 short_break_length = datetime.timedelta(minutes=short_break_minutes)
 long_break_length = datetime.timedelta(minutes=long_break_minutes)
 
+symbols = { "focus" : "∞",
+			"break" : "☕",
+			"idle" : "🍅" }
+
 class Session:
 
 	def __init__(self):
@@ -90,8 +94,11 @@ class Session:
 		else:
 			return delta.total_seconds()
 
+	def report(self):
+		print("stage : {}\nstatus : {}\nN : {}\ntstop : {}\nremaining : {}".format(self.stage, self.status, self.Nsession, self.tstop, self.remaining(formatted=True)))
+
 	def __str__(self):
-		return "stage : {}\nstatus : {}\nN : {}\ntstop : {}\nremaining : {}".format(self.stage, self.status, self.Nsession, self.tstop, self.remaining(formatted=True))
+		return "{} {}".format(symbols[self.stage], self.remaining(formatted=True))
 
 
 if __name__ == "__main__":
@@ -106,10 +113,12 @@ if __name__ == "__main__":
 			s.pause()
 		elif cmd == 'stop':
 			s.stop()
+		elif cmd == 'report':
+			s.report()
 		elif cmd == 'print':
 			print(s)
 		else:
-			print("Command {} not known. Use 'start'/'pause'/'stop'/'print'")
+			print("Command {} not known.\nUse 'start'/'pause'/'stop'/'report'/'print'".format(cmd))
 
 	else:
 		print(s)
