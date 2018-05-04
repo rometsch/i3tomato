@@ -20,9 +20,9 @@ number stage [paused] minutes:seconds
 where the =paused= part is only displayed when the session is paused and =number= indicates the number of the session in a row of 4 sessions.
 
 The stages of the session are indicated with the following symbols:
-| focus   | ∞  |
-| break   | ☕ |
-| paused  | †  |
+| focus   | ∞  | infinity |
+| break   | ☕ | hot beverage |
+| paused  | †  | dagger |
 
 An example for the 2nd session in =break= stage with 3:25 remaining is
 
