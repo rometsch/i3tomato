@@ -30,6 +30,12 @@ An example for the 2nd session in =break= stage with 3:25 remaining is
 2 ☕ 3:25
 #+END_EXAMPLE
 
+and if the session is paused
+
+#+BEGIN_EXAMPLE
+2 ☕ † 3:25
+#+END_EXAMPLE
+
 * Controls
 
 There are three things you can do as a user.
