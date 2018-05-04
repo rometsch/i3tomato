@@ -8,6 +8,28 @@ A productivity timer for [[https://github.com/i3/i3status][i3status]] following 
 In this piece of software, a session consists of one focus period (25min) and one break (5min).
 After 3 successful sessions, the fourth break is longer (20min)
 
+* Status String
+
+The status string is build up by 3 or 4 elements.
+Its general syntax
+
+#+BEGIN_EXAMPLE
+number stage [paused] minutes:seconds
+#+END_EXAMPLE
+
+where the =paused= part is only displayed when the session is paused and =number= indicates the number of the session in a row of 4 sessions.
+
+The stages of the session are indicated with the following symbols:
+| focus   | ∞  |
+| break   | ☕ |
+| paused  | †  |
+
+An example for the 2nd session in =break= stage with 3:25 remaining is
+
+#+BEGIN_EXAMPLE
+2 ☕ 3:25
+#+END_EXAMPLE
+
 * Controls
 
 There are three things you can do as a user.
@@ -16,7 +38,7 @@ There are three things you can do as a user.
 2. pause / resume
 3. stop
 
-=tomatotimer= automatically takes care of
+=tomatotimer= automatically takes care of choosing the correct next stage (focus/break) and the length (short/long break).
 
 These actions should be bind to keyboard shortcuts.
 Since this is supposed to be used with the =i3= window manager, the appropriate lines in the config file are
@@ -39,11 +61,15 @@ bar {
 }
 #+END_EXAMPLE
 
+It might be nice to set the refresh interval of =i3status= to 1 second in the general block.
 
-
-| focus   | ∞  |
-| break   | ☕ |
-| paused  | †  |
+#+BEGIN_EXAMPLE
+general {
+        ...
+        interval = 1
+        ...
+}
+#+END_EXAMPLE
 
 * Run File
 
