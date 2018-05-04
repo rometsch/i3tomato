@@ -16,7 +16,8 @@ long_break_length = datetime.timedelta(minutes=long_break_minutes)
 
 symbols = { "focus" : "∞",
 			"break" : "☕",
-			"paused" : "†"}
+			"paused" : "P",
+			"idle" : " "} #"†"}
 
 class Session:
 
@@ -104,9 +105,12 @@ class Session:
 		print("stage : {}\nstatus : {}\nN : {}\ntstop : {}\nremaining : {}".format(self.stage, self.status, self.Nsession, self.tstop, self.remaining(formatted=True)))
 
 	def __str__(self):
-		status_str = "{} {}".format(self.Nsession, symbols[self.stage])
+		status_str = ""
+		status_str += "{}".format(symbols[self.stage])
 		if self.status == "paused":
 			status_str += " {}".format(symbols["paused"])
+		else:
+			status_str += " {}".format(self.Nsession)
 		status_str += " {}".format(self.remaining(formatted=True))
 		return status_str
 
