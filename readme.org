@@ -16,12 +16,34 @@ There are three things you can do as a user.
 2. pause / resume
 3. stop
 
+=tomatotimer= automatically takes care of
+
 These actions should be bind to keyboard shortcuts.
-Since this is supposed to be used with the =i3= window manager, the appropriate line in the config file is
+Since this is supposed to be used with the =i3= window manager, the appropriate lines in the config file are
 
 #+BEGIN_EXAMPLE
-bindsym $mod+Control+... exec ...
+bindsym $mod+Control+p exec "~/repo/i3tomato/tomatotimer.py pause"
+bindsym $mod+Control+t exec "~/repo/i3tomato/tomatotimer.py start"
 #+END_EXAMPLE
+
+
+* i3status element
+
+You can display the status of the tomatotimer in the i3status bar by using the provided =wrapper.py= script.
+
+My =i3= config entry for this looks like
+
+#+BEGIN_EXAMPLE
+bar {
+        status_command i3status | ~/repo/i3tomato/wrapper.py
+}
+#+END_EXAMPLE
+
+
+
+| focus   | ∞  |
+| break   | ☕ |
+| paused  | †  |
 
 * Run File
 
@@ -41,10 +63,3 @@ If the session is paused, the stop time is replaced with the time remaining, whi
 You can use =i3tomato= as a rudimentary time tracker app.
 
 The file you want the log to be written at must be specified as an *absolute* path at the beginning of the script by setting the variable =logfile=.
-
-
-* Symbols
-
-| break   | ☕ | B |
-| pause   | ⏵  | P |
-| session | ∞  | S |

@@ -16,7 +16,7 @@ long_break_length = datetime.timedelta(minutes=long_break_minutes)
 
 symbols = { "focus" : "∞",
 			"break" : "☕",
-			"idle" : "🍅" }
+			"paused" : "†"}
 
 class Session:
 
@@ -32,14 +32,16 @@ class Session:
 		elif self.stage in ["break", "idle"]:
 			self.stage = "focus"
 			self.status = "running"
-			self.Nsession += 1
+			if self.Nsession >= number_session_in_row:
+				self.Nsession = 1
+			else:
+				self.Nsession += 1
 			self.tstop = self.now + focus_length
 		elif self.stage == "focus":
 			self.stage = "break"
 			self.status = "running"
 			if self.Nsession >= number_session_in_row:
 				self.tstop = self.now + long_break_length
-				self.Nsession = 0
 			else:
 				self.tstop = self.now + short_break_length
 		self.write_runfile()
@@ -88,8 +90,12 @@ class Session:
 		else:
 			delta = datetime.timedelta(seconds=self.remaining_seconds)
 		if formatted:
-			minutes = int(delta.seconds / 60)
-			seconds = int(delta.seconds%60)
+			if delta.total_seconds() >= 0:
+				minutes = int(delta.seconds / 60)
+				seconds = int(delta.seconds%60)
+			else:
+				minutes = 0
+				seconds = 0
 			return "{:02d}:{:02d}".format(minutes, seconds)
 		else:
 			return delta.total_seconds()
@@ -98,7 +104,11 @@ class Session:
 		print("stage : {}\nstatus : {}\nN : {}\ntstop : {}\nremaining : {}".format(self.stage, self.status, self.Nsession, self.tstop, self.remaining(formatted=True)))
 
 	def __str__(self):
-		return "{} {}".format(symbols[self.stage], self.remaining(formatted=True))
+		status_str = "{} {}".format(self.Nsession, symbols[self.stage])
+		if self.status == "paused":
+			status_str += " {}".format(symbols["paused"])
+		status_str += " {}".format(self.remaining(formatted=True))
+		return status_str
 
 
 if __name__ == "__main__":
