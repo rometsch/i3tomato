@@ -3,6 +3,46 @@
 
 A productivity timer for [[https://github.com/i3/i3status][i3status]] following the [[https://en.wikipedia.org/wiki/Pomodoro_Technique][promodoro tactic]].
 
+* Session
+
+In this piece of software, a session consists of one focus period (25min) and one break (5min).
+After 3 successful sessions, the fourth break is longer (20min)
+
+* Controls
+
+There are three things you can do as a user.
+
+1. start a focus / break period
+2. pause / resume
+3. stop
+
+These actions should be bind to keyboard shortcuts.
+Since this is supposed to be used with the =i3= window manager, the appropriate line in the config file is
+
+#+BEGIN_EXAMPLE
+bindsym $mod+Control+... exec ...
+#+END_EXAMPLE
+
+* Run File
+
+Information about the current session is stored in =/run/user/your_uid/tomatotimer=.
+The file contains in the respective line:
+
+1. stage (focus/break)
+2. status (running/paused) in the second line, the
+3. number of the session sessions done before in a row without a long break
+4. stop time as an ISO timestamp (YYYY-MM-DD HH:MM:SS)
+5. remaining time in seconds used for pausing/resuming
+
+If the session is paused, the stop time is replaced with the time remaining, which is then used to calculate a new stop time when resuming.
+
+* TODO Log File
+
+You can use =i3tomato= as a rudimentary time tracker app.
+
+The file you want the log to be written at must be specified as an *absolute* path at the beginning of the script by setting the variable =logfile=.
+
+
 * Symbols
 
 | break   | ☕ | B |
