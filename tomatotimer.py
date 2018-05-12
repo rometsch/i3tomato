@@ -3,6 +3,7 @@
 import os
 import datetime
 import sys
+from subprocess import Popen, PIPE, STDOUT
 
 # config
 focus_minutes = 25
@@ -18,6 +19,28 @@ symbols = { "focus" : "∞",
 			"break" : "☕",
 			"paused" : "P",
 			"idle" : " "} #"†"}
+
+
+def promt(session):
+
+	choices = { 'start break/focus' : session.start,
+				'pause' : session.pause,
+				'stop' : session.stop }
+
+	choices_str = "|".join([k for k in choices])
+
+	CMD = ['rofi', '-sep', '|', '-dmenu',
+		   '-p', 'Time is up! Continue with']
+
+	p = Popen(CMD, stdout=PIPE, stdin=PIPE, stderr=PIPE)
+	stdout_data = p.communicate(input=choices_str.encode('utf-8'))
+	selected = stdout_data[0].decode('utf-8').strip()
+
+	try:
+		choices[selected]()
+	except KeyError:
+		pass
+
 
 class Session:
 
@@ -48,9 +71,7 @@ class Session:
 		self.write_runfile()
 
 	def pause(self):
-		if self.status == "paused":
-			self.start()
-		elif self.stage in ['focus', 'break']:
+		if self.stage in ['focus', 'break']:
 			self.status = "paused"
 			self.write_runfile(calc_remaining=True)
 
@@ -67,7 +88,7 @@ class Session:
 				self.stage,
 				self.status,
 				self.Nsession,
-				self.tstop.isoformat(sep=' '),
+				self.tstop.isoformat(),
 				self.remaining(force=calc_remaining) ))
 
 
@@ -77,7 +98,7 @@ class Session:
 				self.stage = rf.readline().strip()
 				self.status = rf.readline().strip()
 				self.Nsession = int(rf.readline().strip())
-				self.tstop = datetime.datetime.strptime(rf.readline().strip(), '%Y-%m-%d %H:%M:%S.%f')
+				self.tstop = datetime.datetime.strptime(rf.readline().strip(), '%Y-%m-%dT%H:%M:%S.%f')
 				self.remaining_seconds = float(rf.readline().strip())
 		except FileNotFoundError:
 			self.stage = "idle"
@@ -103,6 +124,9 @@ class Session:
 
 	def report(self):
 		print("stage : {}\nstatus : {}\nN : {}\ntstop : {}\nremaining : {}".format(self.stage, self.status, self.Nsession, self.tstop, self.remaining(formatted=True)))
+
+	def logline(self):
+		line = ""
 
 	def __str__(self):
 		status_str = ""
@@ -135,4 +159,4 @@ if __name__ == "__main__":
 			print("Command {} not known.\nUse 'start'/'pause'/'stop'/'report'/'print'".format(cmd))
 
 	else:
-		print(s)
+		promt(s)
