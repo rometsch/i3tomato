@@ -52,21 +52,25 @@ def read_line():
         sys.exit()
 
 if __name__ == '__main__':
-    # Skip the first line which contains the version header.
-    print_line(read_line())
+	# Skip the first line which contains the version header.
+	print_line(read_line())
 
-    # The second line contains the start of the infinite array.
-    print_line(read_line())
+	# The second line contains the start of the infinite array.
+	print_line(read_line())
 
-    while True:
-        line, prefix = read_line(), ''
-        # ignore comma at start of lines
-        if line.startswith(','):
-            line, prefix = line[1:], ','
+	while True:
+		line, prefix = read_line(), ''
+		# ignore comma at start of lines
+		if line.startswith(','):
+			line, prefix = line[1:], ','
 
-        j = json.loads(line)
-        # insert information into the start of the json, but could be anywhere
-        # CHANGE THIS LINE TO INSERT SOMETHING ELSE
-        j.insert(0, {'full_text' : "{}".format(tomatotimer.Session()), 'name' : 'tomatotimer'})
-        # and echo back new encoded json
-        print_line(prefix+json.dumps(j))
+		tomatosession = tomatotimer.Session()
+		if tomatosession.remaining() <= 0:
+			tomatosession.prompt()
+
+		j = json.loads(line)
+		# insert information into the start of the json, but could be anywhere
+		# CHANGE THIS LINE TO INSERT SOMETHING ELSE
+		j.insert(0, {'full_text' : "{}".format(tomatosession), 'name' : 'tomatotimer'})
+		# and echo back new encoded json
+		print_line(prefix+json.dumps(j))

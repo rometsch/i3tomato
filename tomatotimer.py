@@ -21,8 +21,7 @@ symbols = { "focus" : "∞",
 			"idle" : " "} #"†"}
 
 
-def promt(session):
-
+def prompt(session):
 	choices = { 'start break/focus' : session.start,
 				'pause' : session.pause,
 				'stop' : session.stop }
@@ -138,6 +137,8 @@ class Session:
 		status_str += " {}".format(self.remaining(formatted=True))
 		return status_str
 
+	def prompt(self):
+		prompt(self)
 
 if __name__ == "__main__":
 	args = sys.argv
@@ -159,4 +160,4 @@ if __name__ == "__main__":
 			print("Command {} not known.\nUse 'start'/'pause'/'stop'/'report'/'print'".format(cmd))
 
 	else:
-		promt(s)
+		prompt(s)
