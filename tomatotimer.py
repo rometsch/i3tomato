@@ -52,7 +52,7 @@ class Session:
 		if self.status == "paused":
 			self.status = "running"
 			self.tstop = self.now + datetime.timedelta(seconds=self.remaining_seconds)
-		elif self.stage in ["break", "idle"]:
+		elif self.stage in ["break", "idle"] and self.status != "paused":
 			self.stage = "focus"
 			self.status = "running"
 			if self.Nsession >= number_session_in_row:
