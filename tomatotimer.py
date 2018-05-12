@@ -37,8 +37,12 @@ def prompt(session):
 
 	try:
 		choices[selected]()
+
 	except KeyError:
 		pass
+
+	session.prompt_open = False
+
 
 
 class Session:
@@ -47,8 +51,14 @@ class Session:
 		self.now = datetime.datetime.now()
 		self.runpath = os.path.join('/run/user', '{}'.format(os.getuid()), 'tomatotimer')
 		self.read_runfile()
+		if (self.remaining() < 0 and not self.prompt_open):
+			self.prompt()
+			self.prompt_open = True
+			self.write_runfile()
+
 
 	def start(self):
+		self.prompt_open = False
 		if self.status == "paused":
 			self.status = "running"
 			self.tstop = self.now + datetime.timedelta(seconds=self.remaining_seconds)
@@ -83,9 +93,10 @@ class Session:
 
 	def write_runfile(self, calc_remaining=False):
 		with open(self.runpath, 'w') as rf:
-			rf.write("{}\n{}\n{}\n{}\n{}".format(
+			rf.write("{}\n{}\n{}\n{}\n{}\n{}".format(
 				self.stage,
 				self.status,
+				self.prompt_open,
 				self.Nsession,
 				self.tstop.isoformat(),
 				self.remaining(force=calc_remaining) ))
@@ -96,6 +107,7 @@ class Session:
 			with open(self.runpath, 'r') as rf:
 				self.stage = rf.readline().strip()
 				self.status = rf.readline().strip()
+				self.prompt_open = rf.readline().strip() == "True"
 				self.Nsession = int(rf.readline().strip())
 				self.tstop = datetime.datetime.strptime(rf.readline().strip(), '%Y-%m-%dT%H:%M:%S.%f')
 				self.remaining_seconds = float(rf.readline().strip())
