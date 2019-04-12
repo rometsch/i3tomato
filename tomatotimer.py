@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # Productivity timer following the pomodoro method.
 import os
 import datetime
